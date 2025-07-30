@@ -34,6 +34,7 @@ NaviCode는 주소나 장소명을 입력하지 않아도,
 
 - [React Native](https://reactnative.dev/)
 - [Expo](https://expo.dev/) (개발 및 테스트 간편화)
+- [TypeScript](https://www.typescriptlang.org/) (정적 타입 이용)
 - [`axios`](https://www.npmjs.com/package/axios) – 백엔드 API 호출
 - [`expo-location`](https://docs.expo.dev/versions/latest/sdk/location/) – GPS 정보 접근
 - [`react-navigation`](https://reactnavigation.org/) – 화면 간 이동
@@ -45,14 +46,14 @@ NaviCode는 주소나 장소명을 입력하지 않아도,
 ### ✅ 1. 프로젝트 클론 및 의존성 설치
 
 ```bash
-git clone https://github.com/your-username/NaviCodeApp.git
-cd NaviCodeApp
-npm install
+git clone https://github.com/your-username/NaviCode_FE.git
+cd NaviCode_FE
+npx create-expo-app NaviCodeApp
 
 ### ✅ 2. Expo 실행
 
 ```bash
-npm start
+npx expo start
 
 - Android: Expo Go 앱 설치 후 QR코드 스캔
 - iOS: 동일하게 Expo Go 앱에서 실행

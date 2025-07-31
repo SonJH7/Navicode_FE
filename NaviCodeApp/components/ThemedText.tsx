@@ -1,6 +1,8 @@
-import { StyleSheet, Text, type TextProps } from 'react-native';
+import { Text, type TextProps } from 'react-native';
+import { useTheme } from '@emotion/react';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
+import type { AppTheme } from '@/theme';
 
 export type ThemedTextProps = TextProps & {
   lightColor?: string;
@@ -15,51 +17,23 @@ export function ThemedText({
   type = 'default',
   ...rest
 }: ThemedTextProps) {
+  const theme = useTheme() as AppTheme;
   const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
 
-  return (
-    <Text
-      style={[
-        { color },
-        type === 'default' ? styles.default : undefined,
-        type === 'title' ? styles.title : undefined,
-        type === 'defaultSemiBold' ? styles.defaultSemiBold : undefined,
-        type === 'subtitle' ? styles.subtitle : undefined,
-        type === 'link' ? styles.link : undefined,
-        style,
-      ]}
-      {...rest}
-    />
-  );
-}
+  const variantStyle = (() => {
+    switch (type) {
+      case 'title':
+        return theme.typography.title1Bold;
+      case 'defaultSemiBold':
+        return theme.typography.body1Bold;
+      case 'subtitle':
+        return theme.typography.subtitle1Bold;
+      case 'link':
+        return [theme.typography.body1Regular, { color: theme.colors.link }];
+      default:
+        return theme.typography.body1Regular;
+    }
+  })();
 
-const styles = StyleSheet.create({
-  default: {
-    fontFamily: 'Pretendard',
-    fontSize: 16,
-    lineHeight: 24,
-  },
-  defaultSemiBold: {
-    fontFamily: 'Pretendard',
-    fontSize: 16,
-    lineHeight: 24,
-    fontWeight: '600',
-  },
-  title: {
-    fontFamily: 'Pretendard',
-    fontSize: 32,
-    fontWeight: 'bold',
-    lineHeight: 32,
-  },
-  subtitle: {
-    fontFamily: 'Pretendard',
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  link: {
-    fontFamily: 'Pretendard',
-    lineHeight: 30,
-    fontSize: 16,
-    color: '#0a7ea4',
-  },
-});
+  return <Text style={[{ color }, variantStyle, style]} {...rest} />;
+}

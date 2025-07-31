@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
-import { StyleSheet } from 'react-native';
+import { useTheme } from '@emotion/react';
+
+import type { AppTheme } from '@/theme';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -12,11 +14,15 @@ import { ThemedText } from '@/components/ThemedText';
 
 export function HelloWave() {
   const rotationAnimation = useSharedValue(0);
+  const theme = useTheme() as AppTheme;
 
   useEffect(() => {
     rotationAnimation.value = withRepeat(
-      withSequence(withTiming(25, { duration: 150 }), withTiming(0, { duration: 150 })),
-      4 // Run the animation 4 times
+      withSequence(
+        withTiming(25, { duration: 150 }),
+        withTiming(0, { duration: 150 }),
+      ),
+      4, // Run the animation 4 times
     );
   }, [rotationAnimation]);
 
@@ -26,15 +32,14 @@ export function HelloWave() {
 
   return (
     <Animated.View style={animatedStyle}>
-      <ThemedText style={styles.text}>👋</ThemedText>
+      <ThemedText
+        style={[
+          theme.typography.title1Bold,
+          { marginTop: -theme.spacing.spacing1 },
+        ]}
+      >
+        👋
+      </ThemedText>
     </Animated.View>
   );
 }
-
-const styles = StyleSheet.create({
-  text: {
-    fontSize: 28,
-    lineHeight: 32,
-    marginTop: -6,
-  },
-});

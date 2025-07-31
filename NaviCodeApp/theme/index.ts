@@ -82,6 +82,11 @@
   criticalBackground: '#fdf0f0',
   info: '#217cf9',
   infoBackground: '#eff6ff',
+  iconLight: '#687076',
+  iconDark: '#9BA1A6',
+  tintLight: '#0a7ea4',
+  tintDark: '#ffffff',
+  link: '#0a7ea4',
 } as const;
 
 export const spacing = {
@@ -104,30 +109,116 @@ export const spacing = {
   spacing16: 64,
 } as const;
 
+export const fonts = {
+  primary: 'Pretendard',
+  mono: 'SpaceMono',
+} as const;
+
 export const typography = {
-  title1Bold: { fontSize: 20, fontWeight: '700', lineHeight: 27 },
-  title1Regular: { fontSize: 20, fontWeight: '400', lineHeight: 27 },
-  title2Bold: { fontSize: 16, fontWeight: '700', lineHeight: 24 },
-  title2Regular: { fontSize: 16, fontWeight: '400', lineHeight: 24 },
+  title1Bold: {
+    fontSize: 20,
+    fontWeight: '700',
+    lineHeight: 27,
+    fontFamily: fonts.primary,
+  },
+  title1Regular: {
+    fontSize: 20,
+    fontWeight: '400',
+    lineHeight: 27,
+    fontFamily: fonts.primary,
+  },
+  title2Bold: {
+    fontSize: 16,
+    fontWeight: '700',
+    lineHeight: 24,
+    fontFamily: fonts.primary,
+  },
+  title2Regular: {
+    fontSize: 16,
+    fontWeight: '400',
+    lineHeight: 24,
+    fontFamily: fonts.primary,
+  },
 
-  subtitle1Bold: { fontSize: 16, fontWeight: '700', lineHeight: 22 },
-  subtitle1Regular: { fontSize: 16, fontWeight: '400', lineHeight: 24 },
-  subtitle2Bold: { fontSize: 14, fontWeight: '700', lineHeight: 19 },
-  subtitle2Regular: { fontSize: 14, fontWeight: '400', lineHeight: 19 },
+  subtitle1Bold: {
+    fontSize: 16,
+    fontWeight: '700',
+    lineHeight: 22,
+    fontFamily: fonts.primary,
+  },
+  subtitle1Regular: {
+    fontSize: 16,
+    fontWeight: '400',
+    lineHeight: 24,
+    fontFamily: fonts.primary,
+  },
+  subtitle2Bold: {
+    fontSize: 14,
+    fontWeight: '700',
+    lineHeight: 19,
+    fontFamily: fonts.primary,
+  },
+  subtitle2Regular: {
+    fontSize: 14,
+    fontWeight: '400',
+    lineHeight: 19,
+    fontFamily: fonts.primary,
+  },
 
-  body1Bold: { fontSize: 16, fontWeight: '700', lineHeight: 22 },
-  body1Regular: { fontSize: 16, fontWeight: '400', lineHeight: 22 },
-  body2Bold: { fontSize: 14, fontWeight: '700', lineHeight: 19 },
-  body2Regular: { fontSize: 14, fontWeight: '400', lineHeight: 19 },
+  body1Bold: {
+    fontSize: 16,
+    fontWeight: '700',
+    lineHeight: 22,
+    fontFamily: fonts.primary,
+  },
+  body1Regular: {
+    fontSize: 16,
+    fontWeight: '400',
+    lineHeight: 22,
+    fontFamily: fonts.primary,
+  },
+  body2Bold: {
+    fontSize: 14,
+    fontWeight: '700',
+    lineHeight: 19,
+    fontFamily: fonts.primary,
+  },
+  body2Regular: {
+    fontSize: 14,
+    fontWeight: '400',
+    lineHeight: 19,
+    fontFamily: fonts.primary,
+  },
 
-  label1Bold: { fontSize: 14, fontWeight: '700', lineHeight: 19 },
-  label1Regular: { fontSize: 14, fontWeight: '400', lineHeight: 19 },
-  label2Bold: { fontSize: 12, fontWeight: '700', lineHeight: 16 },
-  label2Regular: { fontSize: 12, fontWeight: '400', lineHeight: 16 },
+  label1Bold: {
+    fontSize: 14,
+    fontWeight: '700',
+    lineHeight: 19,
+    fontFamily: fonts.primary,
+  },
+  label1Regular: {
+    fontSize: 14,
+    fontWeight: '400',
+    lineHeight: 19,
+    fontFamily: fonts.primary,
+  },
+  label2Bold: {
+    fontSize: 12,
+    fontWeight: '700',
+    lineHeight: 16,
+    fontFamily: fonts.primary,
+  },
+  label2Regular: {
+    fontSize: 12,
+    fontWeight: '400',
+    lineHeight: 16,
+    fontFamily: fonts.primary,
+  },
 } as const;
 
 export const theme = {
   colors,
+  fonts,
   spacing,
   typography,
 } as const;

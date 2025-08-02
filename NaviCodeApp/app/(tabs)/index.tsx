@@ -1,90 +1,85 @@
+import React from 'react';
+import { SafeAreaView, View, Text, TextInput, StyleSheet } from 'react-native';
 import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useTheme } from '@emotion/react';
 import type { AppTheme } from '@/theme';
+import { MapViewWithPin } from '@/components/MapViewWithPin/MapViewWithPin';
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
 
 export default function HomeScreen() {
   const theme = useTheme() as AppTheme;
   const styles = useStyles(theme);
 
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{
-        light: theme.colors.blue400,
-        dark: theme.colors.blue800,
-      }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <View style={styles.brandContainer}>
+          <Text style={styles.brandText}>NaviCode</Text>
+        </View>
+        <MaterialIcons name="person" size={32} color={theme.colors.iconDark} />
+      </View>
+      <View style={styles.searchBar}>
+        <MaterialIcons name="search" size={20} color={theme.colors.textPlaceholder} />
+        <TextInput
+          style={styles.searchInput}
+          placeholder="NaviCode 검색"
+          placeholderTextColor={theme.colors.textPlaceholder}
         />
-      }
-    >
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText>{' '}
-          to see changes. Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">
-            npm run reset-project
-          </ThemedText>{' '}
-          to get a fresh <ThemedText type="defaultSemiBold">app</ThemedText>{' '}
-          directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+         </View>
+      <View style={styles.mapContainer}>
+        <MapViewWithPin showUserLocation />
+      </View>
+    </SafeAreaView>
   );
 }
 
 function useStyles(theme: AppTheme) {
   return StyleSheet.create({
-    titleContainer: {
+    container: {
+      flex: 1,
+      backgroundColor: theme.colors.backgroundDefault,
+    },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: theme.spacing.spacing4,
+      paddingVertical: theme.spacing.spacing4,
+    },
+    brandContainer: {
       flexDirection: 'row',
       alignItems: 'center',
       gap: theme.spacing.spacing2,
     },
-    stepContainer: {
-      gap: theme.spacing.spacing2,
-      marginBottom: theme.spacing.spacing2,
+logo: {
+      width: 32,
+      height: 32,
     },
-    reactLogo: {
-      height: 178,
-      width: 290,
-      bottom: 0,
-      left: 0,
-      position: 'absolute',
+    brandText: {
+      ...theme.typography.title1Bold,
+      color: theme.colors.textDefault,
+    },
+    searchBar: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginHorizontal: theme.spacing.spacing4,
+      marginBottom: theme.spacing.spacing4,
+      backgroundColor: theme.colors.backgroundFill,
+      borderRadius: theme.spacing.spacing6,
+      borderWidth: 1,
+      borderColor: theme.colors.borderDefault,
+      paddingHorizontal: theme.spacing.spacing3,
+      paddingVertical: theme.spacing.spacing2,
+      gap: theme.spacing.spacing2,
+    },
+    searchInput: {
+      flex: 1,
+      ...theme.typography.body1Regular,
+      color: theme.colors.textDefault,
+    },
+    mapContainer: {
+      flex: 1,
     },
   });
 }

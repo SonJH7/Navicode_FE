@@ -63,7 +63,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         const user = userInfo ? JSON.parse(userInfo) : null;
         dispatch({ type: 'RESTORE_TOKEN', token, user });
       } else {
-        dispatch({ type: 'RESTORE_TOKEN', token: '', user: null });
+        dispatch({ type: 'RESTORE_TOKEN', token: null, user: null });
       }
     });
   }, []);

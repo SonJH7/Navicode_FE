@@ -1,10 +1,7 @@
 ﻿import React, { createContext, useReducer, useEffect, useContext } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { loginApi, registerApi } from '../api/auth';
 
 interface User {
-  id: string;
-  name: string;
   username: string;
 }
 
@@ -57,35 +54,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [state, dispatch] = useReducer(authReducer, initialState);
 
   useEffect(() => {
-    AsyncStorage.getItem('userToken').then(async (token) => {
-      if (token) {
-        const userInfo = await AsyncStorage.getItem('userInfo');
-        const user = userInfo ? JSON.parse(userInfo) : null;
-        dispatch({ type: 'RESTORE_TOKEN', token, user });
-      } else {
-        dispatch({ type: 'RESTORE_TOKEN', token: null, user: null });
-      }
-    });
+    dispatch({ type: 'RESTORE_TOKEN', token: null, user: null });
   }, []);
 
   const signIn = async (username: string, password: string) => {
-    const { token, user } = await loginApi(username, password);
-    await AsyncStorage.setItem('userToken', token);
-    await AsyncStorage.setItem('userInfo', JSON.stringify(user));
-    dispatch({ type: 'SIGN_IN', token, user });
+    const { token } = await loginApi(username, password);
+    dispatch({ type: 'SIGN_IN', token, user: { username } });
   };
 
   const signOut = () => {
-    AsyncStorage.removeItem('userToken');
-    AsyncStorage.removeItem('userInfo');
     dispatch({ type: 'SIGN_OUT' });
   };
 
-  const signUp = async (username: string, password: string, name: string) => {
-    const { token, user } = await registerApi(username, password, name);
-    await AsyncStorage.setItem('userToken', token);
-    await AsyncStorage.setItem('userInfo', JSON.stringify(user));
-    dispatch({ type: 'SIGN_IN', token, user });
+  const signUp = async (username: string, password: string) => {
+    await registerApi(username, password);
+    const { token } = await loginApi(username, password);
+    dispatch({ type: 'SIGN_IN', token, user: { username } });
   };
 
   return (

@@ -5,12 +5,10 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View,
   StyleSheet,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuth } from '@/contexts/AuthContext';
-import { checkUsernameApi } from '@/api/auth';
 
 export default function SignUpScreen() {
   const [name, setName] = useState('');
@@ -19,18 +17,10 @@ export default function SignUpScreen() {
   const { signUp } = useAuth();
   const router = useRouter();
 
-  const checkUsername = async () => {
-    const res = await checkUsernameApi(username);
-    if (!res.available) {
-      alert('이미 사용 중인 아이디입니다.');
-    } else {
-      alert('사용 가능한 아이디입니다.');
-    }
-  };
-
   const handleSignUp = async () => {
     try {
       await signUp(username, password, name);
+      router.replace('/');
     } catch (e: any) {
       alert('회원가입 실패: ' + e.message);
     }
@@ -46,17 +36,12 @@ export default function SignUpScreen() {
           value={name}
           onChangeText={setName}
         />
-        <View style={styles.row}>
-          <TextInput
-            style={[styles.input, { flex: 1 }]}
-            placeholder="ID"
-            value={username}
-            onChangeText={setUsername}
-          />
-          <TouchableOpacity style={styles.checkBtn} onPress={checkUsername}>
-            <Text>중복확인</Text>
-          </TouchableOpacity>
-        </View>
+        <TextInput
+          style={styles.input}
+          placeholder="ID"
+          value={username}
+          onChangeText={setUsername}
+        />
         <TextInput
           style={styles.input}
           placeholder="Password"
@@ -88,8 +73,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     borderRadius: 5,
   },
-  row: { flexDirection: 'row', alignItems: 'center', marginBottom: 20 },
-  checkBtn: { marginLeft: 8, padding: 10, backgroundColor: '#DDD', borderRadius: 5 },
   button: {
     width: '80%',
     backgroundColor: '#D9D9D9',

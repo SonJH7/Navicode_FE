@@ -19,6 +19,7 @@ export default function LoginScreen() {
   const handleLogin = async () => {
     try {
       await signIn(username, password);
+      router.replace('/');
     } catch (e: any) {
       alert('로그인 실패: ' + e.message);
     }
@@ -27,7 +28,11 @@ export default function LoginScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.column}>
-        <Text style={styles.title}>NaviCode</Text>
+        {/* 개발자 전용 임시 홈 이동 */}
+        <TouchableOpacity onPress={() => router.replace('/')}
+          accessibilityLabel="개발자 홈 바로가기">
+          <Text style={styles.title}>NaviCode</Text>
+        </TouchableOpacity>        
         <TextInput
           style={styles.input}
           placeholder="ID"

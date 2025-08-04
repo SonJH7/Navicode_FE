@@ -16,10 +16,12 @@ describe('api client', () => {
 
     await request('/test', { body: { a: 1 } });
 
-    expect(global.fetch).toHaveBeenCalledWith(`${BASE_URL}/test`, {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ a: 1 }),
-    });
+    expect(global.fetch).toHaveBeenCalledWith(
+      `${BASE_URL}/test?a=1`,
+      {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      },
+    );
   });
 });

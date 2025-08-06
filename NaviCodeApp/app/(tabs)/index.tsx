@@ -20,12 +20,6 @@ export default function HomeScreen() {
     longitude: number;
   }>();
 
-  const markers = [
-    { latitude: 37.5665, longitude: 126.978 },
-    { latitude: 37.5655, longitude: 126.976 },
-    { latitude: 37.567, longitude: 126.979 },
-  ];
-
   const handleCurrentLocation = async () => {
     if (!mapRef.current) return;
 
@@ -115,7 +109,6 @@ export default function HomeScreen() {
         <MapViewWithPin
           ref={mapRef}
           showUserLocation
-          markers={markers}
           onUserLocationChange={(coords) => setUserLocation(coords)}
         />
         <View style={styles.searchOverlay} pointerEvents="box-none">

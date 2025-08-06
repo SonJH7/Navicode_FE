@@ -1,4 +1,4 @@
-import { getCoordType, getCoordStatic, getCoordDynamic } from '../coord';
+import { getCoordType, getCoordStatic, getCoordDynamic, addCoordLocation } from '../coord';
 import { BASE_URL } from '../client';
 
 describe('coord api', () => {
@@ -27,7 +27,7 @@ describe('coord api', () => {
 
     await getCoordType('3333');
 
-    expect(global.fetch).toHaveBeenCalledWith(`${BASE_URL}/coord_type?navicode=3333`, {
+    expect(global.fetch).toHaveBeenCalledWith(`${BASE_URL}/location/coord_type?navicode=3333`, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
     });
@@ -49,5 +49,43 @@ describe('coord api', () => {
     await expect(getCoordDynamic('3232', '1', '2')).resolves.toEqual([
       { latitude: 1, longitude: 2, name: 'a' },
     ]);
+  });
+
+  it('좌표를 추가한다', async () => {
+    mockFetch({ success: 'true', message: 'location added success', navicode: '3333' });
+
+    await expect(
+      addCoordLocation({
+        name: 'test',
+        latitude: '1',
+        longitude: '2',
+        type: '2',
+        navicode: '3333',
+      }),
+    ).resolves.toEqual({ success: 'true', message: 'location added success', navicode: '3333' });
+  });
+
+  it('좌표 추가 요청을 올바르게 보낸다', async () => {
+    mockFetch({ success: 'true', message: 'location added success', navicode: '3333' });
+
+    await addCoordLocation({
+      name: 'test',
+      latitude: '1',
+      longitude: '2',
+      type: '2',
+      navicode: '3333',
+    });
+
+    expect(global.fetch).toHaveBeenCalledWith(`${BASE_URL}/location/add_coord_location`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: 'test',
+        latitude: '1',
+        longitude: '2',
+        type: '2',
+        navicode: '3333',
+      }),
+    });
   });
 });

@@ -52,10 +52,17 @@ cd NaviCodeApp
 npm install
 ```
 
- ### ✅ 2. Expo 실행
+### ✅ 2. Expo 실행
 
 ```bash
 npx expo start
+```
+
+### ✅ 3. Test 실행 및 코드 스타일 정리
+
+```bash
+npm test
+npm run format
 ```
 
 - Android: Expo Go 앱 설치 후 QR코드 스캔

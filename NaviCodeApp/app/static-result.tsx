@@ -1,11 +1,11 @@
 import React, { useMemo, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Share } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { useTheme } from '@emotion/react';
 import type { AppTheme } from '@/theme';
 import { MapViewWithPin } from '@/components/MapViewWithPin/MapViewWithPin';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
-import * as Linking from 'expo-linking';
+import { LocationActionButtons } from '@/components/LocationActionButtons';
 
 export default function StaticResultScreen() {
   const { name, latitude, longitude } = useLocalSearchParams<{
@@ -20,21 +20,6 @@ export default function StaticResultScreen() {
   const coords = {
     latitude: Number(latitude),
     longitude: Number(longitude),
-  };
-
-  const handleDirections = () => {
-    const url = `https://www.google.com/maps/dir/?api=1&destination=${coords.latitude},${coords.longitude}`;
-    Linking.openURL(url);
-  };
-
-  const handleShare = async () => {
-    try {
-      await Share.share({
-        message: `${name} (${coords.latitude}, ${coords.longitude})`,
-      });
-    } catch (e) {
-      console.warn(e);
-    }
   };
 
   return (
@@ -55,14 +40,7 @@ export default function StaticResultScreen() {
           <Text style={styles.coords}>
             {coords.latitude.toFixed(6)}, {coords.longitude.toFixed(6)}
           </Text>
-          <View style={styles.buttonRow}>
-            <TouchableOpacity style={styles.button} onPress={handleDirections}>
-              <Text style={styles.buttonText}>길찾기</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={handleShare}>
-              <Text style={styles.buttonText}>공유</Text>
-            </TouchableOpacity>
-          </View>
+          <LocationActionButtons name={name} coords={coords} />
         </BottomSheetView>
       </BottomSheet>
     </View>
@@ -83,23 +61,6 @@ function useStyles(theme: AppTheme) {
     coords: {
       ...theme.typography.body2Regular,
       color: theme.colors.textSub,
-    },
-    buttonRow: {
-      flexDirection: 'row',
-      gap: theme.spacing.spacing2,
-      marginTop: theme.spacing.spacing2,
-    },
-    button: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: theme.colors.backgroundDefault,
-      paddingVertical: theme.spacing.spacing2,
-      borderRadius: theme.spacing.spacing3,
-    },
-    buttonText: {
-      ...theme.typography.body2Bold,
-      color: theme.colors.textDefault,
     },
   });
 }

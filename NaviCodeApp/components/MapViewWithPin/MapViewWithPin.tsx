@@ -19,6 +19,10 @@ interface MapViewWithPinProps {
   onMarkerDragEnd?: (coords: Coords) => void;
   onUserLocationChange?: (coords: Coords) => void;
   showUserLocation?: boolean;
+  onMarkerPress?: (index: number, coords: Coords) => void;
+  onClusterPress?: (clusterMarkers: Coords[]) => void;
+  onMapPress?: () => void;
+  clusterDistance?: number;
 }
 
 export const MapViewWithPin = React.forwardRef<MapView, MapViewWithPinProps>(
@@ -29,14 +33,20 @@ export const MapViewWithPin = React.forwardRef<MapView, MapViewWithPinProps>(
       onMarkerDragEnd,
       onUserLocationChange,
       showUserLocation = false,
+      onMarkerPress,
+      onClusterPress,
+      onMapPress,
+      clusterDistance = 0.01,
     }: MapViewWithPinProps,
     ref,
   ) {
     const theme = useTheme() as AppTheme;
     const styles = useStyles(theme);
 
-    const clusters = React.useMemo(() => clusterMarkers(markers), [markers]);
-
+    const clusters = React.useMemo(
+      () => clusterMarkers(markers, clusterDistance),
+      [markers, clusterDistance],
+    );
     return (
       <StyledMapView
         ref={ref}
@@ -49,6 +59,7 @@ export const MapViewWithPin = React.forwardRef<MapView, MapViewWithPinProps>(
         showsUserLocation={showUserLocation}
         showsMyLocationButton={false}
         onUserLocationChange={(e) => onUserLocationChange?.(e.nativeEvent.coordinate)}
+        onPress={() => onMapPress?.()}
       >
         {markerCoords && (
           <Marker
@@ -59,7 +70,11 @@ export const MapViewWithPin = React.forwardRef<MapView, MapViewWithPinProps>(
         )}
         {clusters.map((cluster, idx) =>
           cluster.count === 1 ? (
-            <Marker key={`marker-${idx}`} coordinate={cluster.markers[0]} />
+            <Marker
+              key={`marker-${cluster.indices[0]}`}
+              coordinate={cluster.markers[0]}
+              onPress={() => onMarkerPress?.(cluster.indices[0], cluster.markers[0])}
+            />
           ) : (
             <Marker
               key={`cluster-${idx}`}
@@ -67,6 +82,7 @@ export const MapViewWithPin = React.forwardRef<MapView, MapViewWithPinProps>(
                 latitude: cluster.latitude,
                 longitude: cluster.longitude,
               }}
+              onPress={() => onClusterPress?.(cluster.markers)}
             >
               <View style={styles.cluster}>
                 <Text style={styles.clusterText}>{cluster.count}</Text>
@@ -85,9 +101,10 @@ function clusterMarkers(markers: Coords[], distance = 0.01) {
     longitude: number;
     count: number;
     markers: Coords[];
+    indices: number[];
   }[] = [];
 
-  markers.forEach((m) => {
+  markers.forEach((m, idx) => {
     const cluster = clusters.find(
       (c) =>
         Math.abs(c.latitude - m.latitude) <= distance &&
@@ -97,12 +114,14 @@ function clusterMarkers(markers: Coords[], distance = 0.01) {
     if (cluster) {
       cluster.count += 1;
       cluster.markers.push(m);
+      cluster.indices.push(idx);
     } else {
       clusters.push({
         latitude: m.latitude,
         longitude: m.longitude,
         count: 1,
         markers: [m],
+        indices: [idx],
       });
     }
   });

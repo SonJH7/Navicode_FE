@@ -3,7 +3,6 @@ import {
   View,
   Text,
   StyleSheet,
-  TextInput,
   TouchableOpacity,
   ToastAndroid,
   Platform,
@@ -16,7 +15,7 @@ import type { AppTheme } from '@/theme';
 import { MapViewWithPin } from '@/components/MapViewWithPin/MapViewWithPin';
 import { SearchBar } from '@/components/SearchBar';
 import { CurrentLocationButton } from '@/components/CurrentLocationButton';
-import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
+import BottomSheet, { BottomSheetView, BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { BottomBar } from '@/components/BottomBar/BottomBar';
 import { addCoordLocation } from '@/api/coord';
 import { useAuth } from '@/contexts/AuthContext';
@@ -192,12 +191,14 @@ export default function MakeScreen() {
         index={0}
         snapPoints={snapPoints}
         bottomInset={theme.spacing.spacingCLB}
+        keyboardBehavior="interactive"
+        android_keyboardInputMode="adjustResize"
         backgroundStyle={{ backgroundColor: theme.colors.backgroundFill, opacity: 0.9 }}
         handleIndicatorStyle={{ backgroundColor: theme.colors.textSub }}
       >
         <BottomSheetView style={styles.sheetContent}>
           <Text style={styles.title}>정적 위치 등록</Text>
-          <TextInput
+          <BottomSheetTextInput
             style={styles.singleInput}
             value={name}
             onChangeText={setName}
@@ -205,7 +206,7 @@ export default function MakeScreen() {
             placeholderTextColor={theme.colors.textPlaceholder}
           />
           <View style={styles.inputContainer}>
-            <TextInput
+            <BottomSheetTextInput
               style={styles.input}
               value={code}
               onChangeText={setCode}

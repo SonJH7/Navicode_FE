@@ -2,6 +2,9 @@
   "expo": {
     "name": "NaviCodeApp",
     "slug": "NaviCodeApp",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -20,7 +23,13 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "permissions": ["ACCESS_COARSE_LOCATION", "ACCESS_FINE_LOCATION"]
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION"
+      ],
+      "softwareKeyboardLayoutMode": "resize"
     },
     "web": {
       "bundler": "metro",
@@ -41,6 +50,16 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "3db95a41-7587-4f41-9eb4-1921e1297fbe"
+      }
+    },
+    "owner": "huny777",
+    "updates": {
+      "url": "https://u.expo.dev/3db95a41-7587-4f41-9eb4-1921e1297fbe"
     }
   }
 }

@@ -7,7 +7,7 @@ interface AuthResponse {
 }
 
 export async function loginApi(username: string, password: string) {
-  const data = await request<AuthResponse>('/api/auth/login', {
+  const data = await request<AuthResponse>('/auth/login', {
     method: 'POST',
     body: { username, password },
   });
@@ -18,7 +18,7 @@ export async function loginApi(username: string, password: string) {
 }
 
 export async function registerApi(username: string, password: string) {
-  const data = await request<AuthResponse>('/api/auth/register', {
+  const data = await request<AuthResponse>('/auth/register', {
     method: 'POST',
     body: { username, password },
   });

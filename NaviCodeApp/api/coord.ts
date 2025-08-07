@@ -51,7 +51,8 @@ export interface AddCoordLocationRequest {
   name: string;
   latitude: string;
   longitude: string;
-  type: '2';
+  type: 2;
+  username: string;
   navicode?: string;
 }
 

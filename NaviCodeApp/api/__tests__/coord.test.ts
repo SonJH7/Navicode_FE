@@ -59,7 +59,8 @@ describe('coord api', () => {
         name: 'test',
         latitude: '1',
         longitude: '2',
-        type: '2',
+        type: 2,
+        username: 'user',
         navicode: '3333',
       }),
     ).resolves.toEqual({ success: 'true', message: 'location added success', navicode: '3333' });
@@ -72,7 +73,8 @@ describe('coord api', () => {
       name: 'test',
       latitude: '1',
       longitude: '2',
-      type: '2',
+      type: 2,
+      username: 'user',
       navicode: '3333',
     });
 
@@ -83,7 +85,8 @@ describe('coord api', () => {
         name: 'test',
         latitude: '1',
         longitude: '2',
-        type: '2',
+        type: 2,
+        username: 'user',
         navicode: '3333',
       }),
     });

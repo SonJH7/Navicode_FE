@@ -7,6 +7,8 @@ import {
   ToastAndroid,
   Platform,
   Alert,
+  Keyboard,
+  KeyboardEvent,
 } from 'react-native';
 import MapView from 'react-native-maps';
 import * as Location from 'expo-location';
@@ -24,13 +26,15 @@ export default function MakeScreen() {
   const theme = useTheme() as AppTheme;
   const styles = useStyles(theme);
   const mapRef = useRef<MapView>(null);
+  const bottomSheetRef = useRef<BottomSheet>(null);
   const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number }>();
   const [markerCoords, setMarkerCoords] = useState<{ latitude: number; longitude: number }>();
   const [code, setCode] = useState('');
   const [name, setName] = useState('');
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
   const { state } = useAuth();
   const username = state.user?.username ?? '';
-  const snapPoints = useMemo(() => ['25%'], []);
+  const snapPoints = useMemo(() => ['25%', '50%'], []);
 
   const handlePlaceSearch = async (query: string) => {
     try {
@@ -96,6 +100,21 @@ export default function MakeScreen() {
         console.warn(e);
       }
     })();
+  }, []);
+
+  useEffect(() => {
+    const showSub = Keyboard.addListener('keyboardDidShow', (e: KeyboardEvent) => {
+      setKeyboardHeight(e.endCoordinates.height);
+      bottomSheetRef.current?.snapToIndex(1);
+    });
+    const hideSub = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardHeight(0);
+      bottomSheetRef.current?.snapToIndex(0);
+    });
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
   }, []);
 
   const handleRegister = async () => {
@@ -188,9 +207,10 @@ export default function MakeScreen() {
       <CurrentLocationButton onPress={handleCurrentLocation} style={styles.currentLocationButton} />
       <BottomBar selected="make" />
       <BottomSheet
+        ref={bottomSheetRef}
         index={0}
         snapPoints={snapPoints}
-        bottomInset={theme.spacing.spacingCLB}
+        bottomInset={keyboardHeight + theme.spacing.spacingCLB}
         keyboardBehavior="interactive"
         android_keyboardInputMode="adjustResize"
         backgroundStyle={{ backgroundColor: theme.colors.backgroundFill, opacity: 0.9 }}

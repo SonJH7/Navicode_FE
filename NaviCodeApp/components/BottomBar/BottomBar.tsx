@@ -19,13 +19,13 @@ export function BottomBar({ selected }: BottomBarProps) {
     if (tab === selected) return;
     switch (tab) {
       case 'explore':
-        router.push('/');
+        router.replace('/');
         break;
       case 'make':
-        router.push('/make');
+        router.replace('/make');
         break;
       case 'mypage':
-        router.push('/mypage');
+        router.replace('/mypage');
         break;
     }
   };

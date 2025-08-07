@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { View, TextInput, StyleSheet, Text, TouchableOpacity, KeyboardTypeOptions } from 'react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useTheme } from '@emotion/react';
 import type { AppTheme } from '@/theme';
@@ -10,13 +10,17 @@ import { useRouter } from 'expo-router';
 interface SearchBarProps {
   placeholder?: string;
   onChangeText?: (text: string) => void;
+  onSearch?: (text: string) => Promise<void> | void;
   location?: { latitude: number; longitude: number };
+  keyboardType?: KeyboardTypeOptions;
 }
 
 export function SearchBar({
   placeholder = 'NaviCode 검색',
   onChangeText,
+  onSearch,
   location,
+  keyboardType = 'phone-pad',
 }: SearchBarProps) {
   const theme = useTheme() as AppTheme;
   const styles = useStyles(theme);
@@ -40,6 +44,10 @@ export function SearchBar({
 
   const handleSearch = async () => {
     try {
+      if (onSearch) {
+        await onSearch(text);
+        return;
+      }
       const res = await search(text, location);
       if (res.type === '2' && res.staticResult) {
         router.push({
@@ -75,7 +83,7 @@ export function SearchBar({
           style={styles.input}
           placeholder={placeholder}
           placeholderTextColor={theme.colors.textPlaceholder}
-          keyboardType="phone-pad"
+          keyboardType={keyboardType}
           onChangeText={handleChangeText}
           value={text}
           onFocus={() => setFocused(true)}

@@ -3,11 +3,12 @@ import {
   View,
   Text,
   StyleSheet,
-  TextInput,
   TouchableOpacity,
   ToastAndroid,
   Platform,
   Alert,
+  Keyboard,
+  KeyboardEvent,
 } from 'react-native';
 import MapView from 'react-native-maps';
 import * as Location from 'expo-location';
@@ -16,20 +17,44 @@ import type { AppTheme } from '@/theme';
 import { MapViewWithPin } from '@/components/MapViewWithPin/MapViewWithPin';
 import { SearchBar } from '@/components/SearchBar';
 import { CurrentLocationButton } from '@/components/CurrentLocationButton';
-import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
+import BottomSheet, { BottomSheetView, BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { BottomBar } from '@/components/BottomBar/BottomBar';
 import { addCoordLocation } from '@/api/coord';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function MakeScreen() {
   const theme = useTheme() as AppTheme;
   const styles = useStyles(theme);
   const mapRef = useRef<MapView>(null);
+  const bottomSheetRef = useRef<BottomSheet>(null);
   const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number }>();
   const [markerCoords, setMarkerCoords] = useState<{ latitude: number; longitude: number }>();
   const [code, setCode] = useState('');
   const [name, setName] = useState('');
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const { state } = useAuth();
+  const username = state.user?.username ?? '';
+  const snapPoints = useMemo(() => ['25%', '50%'], []);
 
-  const snapPoints = useMemo(() => ['25%'], []);
+  const handlePlaceSearch = async (query: string) => {
+    try {
+      const results = await Location.geocodeAsync(query);
+      if (results.length > 0) {
+        const { latitude, longitude } = results[0];
+        const coords = { latitude, longitude };
+        setMarkerCoords(coords);
+        mapRef.current?.animateToRegion({
+          latitude,
+          longitude,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
+        });
+        setName(query);
+      }
+    } catch (error) {
+      console.warn(error);
+    }
+  };
 
   const handleCurrentLocation = async () => {
     if (!mapRef.current) return;
@@ -77,9 +102,33 @@ export default function MakeScreen() {
     })();
   }, []);
 
+  useEffect(() => {
+    const showSub = Keyboard.addListener('keyboardDidShow', (e: KeyboardEvent) => {
+      setKeyboardHeight(e.endCoordinates.height);
+      bottomSheetRef.current?.snapToIndex(1);
+    });
+    const hideSub = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardHeight(0);
+      bottomSheetRef.current?.snapToIndex(0);
+    });
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, []);
+
   const handleRegister = async () => {
+    if (!username) {
+      const msg = '로그인 후 이용해주세요';
+      if (Platform.OS === 'android') {
+        ToastAndroid.show(msg, ToastAndroid.SHORT);
+      } else {
+        Alert.alert(msg);
+      }
+      return;
+    }
     if (!markerCoords || name.trim() === '') {
-      const msg = '이름과 위치를 모두 입력하세요';
+      const msg = '장소 이름과 위치를 모두 입력하세요';
       if (Platform.OS === 'android') {
         ToastAndroid.show(msg, ToastAndroid.SHORT);
       } else {
@@ -92,13 +141,15 @@ export default function MakeScreen() {
       name: string;
       latitude: string;
       longitude: string;
-      type: '2';
+      type: 2;
+      username: string;
       navicode?: string;
     } = {
       name: name.trim(),
       latitude: markerCoords.latitude.toString(),
       longitude: markerCoords.longitude.toString(),
-      type: '2',
+      type: 2,
+      username,
     };
     if (code.trim()) {
       payload.navicode = code.trim();
@@ -146,20 +197,28 @@ export default function MakeScreen() {
         }}
       />
       <View style={styles.searchOverlay} pointerEvents="box-none">
-        <SearchBar location={userLocation} />
+        <SearchBar
+          placeholder="장소명, 지역명 검색"
+          location={userLocation}
+          keyboardType="default"
+          onSearch={handlePlaceSearch}
+        />
       </View>
       <CurrentLocationButton onPress={handleCurrentLocation} style={styles.currentLocationButton} />
       <BottomBar selected="make" />
       <BottomSheet
+        ref={bottomSheetRef}
         index={0}
         snapPoints={snapPoints}
-        bottomInset={theme.spacing.spacingCLB}
+        bottomInset={keyboardHeight + theme.spacing.spacingCLB}
+        keyboardBehavior="interactive"
+        android_keyboardInputMode="adjustResize"
         backgroundStyle={{ backgroundColor: theme.colors.backgroundFill, opacity: 0.9 }}
         handleIndicatorStyle={{ backgroundColor: theme.colors.textSub }}
       >
         <BottomSheetView style={styles.sheetContent}>
           <Text style={styles.title}>정적 위치 등록</Text>
-          <TextInput
+          <BottomSheetTextInput
             style={styles.singleInput}
             value={name}
             onChangeText={setName}
@@ -167,7 +226,7 @@ export default function MakeScreen() {
             placeholderTextColor={theme.colors.textPlaceholder}
           />
           <View style={styles.inputContainer}>
-            <TextInput
+            <BottomSheetTextInput
               style={styles.input}
               value={code}
               onChangeText={setCode}
@@ -198,7 +257,8 @@ function useStyles(theme: AppTheme) {
       zIndex: 1,
     },
     currentLocationButton: {
-      bottom: theme.spacing.spacingCLB + theme.spacing.spacing4,
+      top: theme.spacing.spacing6 + theme.spacing.spacing14,
+      bottom: undefined,
     },
     sheetContent: {
       padding: theme.spacing.spacing4,

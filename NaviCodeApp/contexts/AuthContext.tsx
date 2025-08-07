@@ -12,7 +12,7 @@ interface AuthState {
 }
 
 type AuthAction =
-  | { type: 'RESTORE_TOKEN'; token: string; user: User | null }
+  | { type: 'RESTORE_TOKEN'; token: string | null; user: User | null }
   | { type: 'SIGN_IN'; token: string; user: User }
   | { type: 'SIGN_OUT' };
 

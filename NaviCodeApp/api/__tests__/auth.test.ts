@@ -1,4 +1,4 @@
-import { loginApi } from '../auth';
+import { loginApi, registerApi } from '../auth';
 
 describe('loginApi', () => {
   beforeEach(() => {
@@ -52,6 +52,34 @@ describe('loginApi', () => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username: 'user', password: 'pass' }),
+    });
+  });
+});
+
+describe('registerApi', () => {
+  beforeEach(() => {
+    global.fetch = jest.fn();
+  });
+
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
+  it('올바른 URL과 옵션으로 fetch를 호출한다', async () => {
+    (global.fetch as jest.Mock).mockResolvedValue({
+      json: async () => ({
+        success: true,
+        token: 'token123',
+        message: '회원가입 성공',
+      }),
+    });
+
+    await registerApi('newuser', 'pass');
+
+    expect(global.fetch).toHaveBeenCalledWith('http://222.122.81.141:8080/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: 'newuser', password: 'pass' }),
     });
   });
 });

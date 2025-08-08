@@ -3,7 +3,7 @@
     "name": "NaviCodeApp",
     "slug": "NaviCodeApp",
     "runtimeVersion": {
-      "policy": "appVersion"
+      "policy": "sdkVersion"
     },
     "version": "1.0.0",
     "orientation": "portrait",
@@ -57,7 +57,7 @@
         "projectId": "3db95a41-7587-4f41-9eb4-1921e1297fbe"
       }
     },
-    "owner": "huny777",
+      "owner": "navicode",
     "updates": {
       "url": "https://u.expo.dev/3db95a41-7587-4f41-9eb4-1921e1297fbe"
     }
